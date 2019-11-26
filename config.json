@@ -1,5 +1,6 @@
 {
   "Virtual File Host Base URL": "http://3.134.73.143:2357/filehosting/get-file/",
   "Database Process Base URL": "http://3.134.73.143:9271/ods/",
-  "Website App Port": 2357
+  "Website App Port": 2357,
+  "Website URL": "http://ec2-3-134-73-143.us-east-2.compute.amazonaws.com/AXA-current-state-architecture"
 }
