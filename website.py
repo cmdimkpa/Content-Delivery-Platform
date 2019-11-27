@@ -91,7 +91,7 @@ def new_page():
             }
         HEADERS = {"Content-Type":"application/json"}
         http.post(hit,json.dumps(payload),headers=HEADERS)
-        return redirect(302,"http://ec2-3-130-5-83.us-east-2.compute.amazonaws.com/AXA-current-state-architecture")
+        return redirect("http://ec2-3-130-5-83.us-east-2.compute.amazonaws.com/AXA-current-state-architecture",302)
     except Exception as error:
         return responsify(400,"Error: %s" % str(error))
 
