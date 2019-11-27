@@ -1,98 +1,75 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-
   <title>AXA Current State Architecture</title>
-
   <!-- Bootstrap core CSS -->
   <link href="https://content-delivery-platform.s3.us-east-2.amazonaws.com/bootstrap.min.css" rel="stylesheet">
-
   <!-- Custom styles for this template -->
   <link href="https://content-delivery-platform.s3.us-east-2.amazonaws.com/simple-sidebar.css" rel="stylesheet">
-
-  <style>
-    .iframe-container {
-  overflow: hidden;
-  position: absolute;
-}
-
-.iframe-container iframe {
-   border: 0;
-   height: 100%;
-   left: 0;
-   position: relative;
-   padding-top: 56.25%;
-   padding-bottom: 56.25%;
-   top: 0;
-   width: 100%;
-}
-  </style>
-
 </head>
-
 <body>
-
-  <div class="d-flex" id="wrapper">
-
+  <div class="d-flex" id="wrapper" data-activelabel="{{ ACTIVE_LABEL|safe }}">
     <!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading"><img src="https://content-delivery-platform.s3.us-east-2.amazonaws.com/logo.png" alt="AXA Current State Architecture" width="325" height="156"> </div>
       <div class="list-group list-group-flush">
-        <a href="#" class="list-group-item list-group-item-action bg-light">Dashboard</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">Shortcuts</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">Overview</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>
+        {{  NAVBAR|safe  }}
       </div>
     </div>
     <!-- /#sidebar-wrapper -->
-
     <!-- Page Content -->
     <div id="page-content-wrapper">
-
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom  float-right">
         <button class="btn btn-primary" id="menu-toggle">Download Architecture (PDF)</button>
-
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
           </ul>
         </div>
       </nav>
-
-      <div class="container-fluid iframe-container">
+      <div class="container-fluid">
         <h1 class="mt-4" id="ActiveLabel">Active Label</h1>
-        <iframe src="https://content-delivery-platform.s3.us-east-2.amazonaws.com/logo.png" allowfullscreen></iframe>
+        <div id="Container"
+           style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
+           <iframe id="ContentIframe" width="100%" height="100%"
+            src=""
+            frameborder="0" allowfullscreen=""
+            style="position:absolute; top:0; left: 0"></iframe>
+          </div>
       </div>
     </div>
     <!-- /#page-content-wrapper -->
-
   </div>
   <!-- /#wrapper -->
-
   <!-- Bootstrap core JavaScript -->
   <script src="https://content-delivery-platform.s3.us-east-2.amazonaws.com/jquery.min.js"></script>
   <script src="https://content-delivery-platform.s3.us-east-2.amazonaws.com/bootstrap.bundle.min.js"></script>
-
-  <!-- Menu Toggle Script -->
+  <!-- Effects After Loading -->
   <script>
+
+    // functions
+
+    function loadPage(entry){
+      var entry = entry.split(",");
+      $("#ContentIframe").attr('src',entry[0]) // load page
+      $('#ActiveLabel').text(entry[1]) // set active label
+    }
+
+    // download architecture report
     $("#menu-toggle").click(function(e) {
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
     });
+
+    // set initial active label
+    $('#ActiveLabel').text($('#wrapper').data('activelabel'))
+
   </script>
-
 </body>
-
 </html>
