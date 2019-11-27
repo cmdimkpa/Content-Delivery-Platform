@@ -24,7 +24,7 @@
     <!-- Page Content -->
     <div id="page-content-wrapper">
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom  float-right">
-        <button class="btn btn-primary" id="menu-toggle">Download Architecture (PDF)</button>
+        <button type="submit" class="btn btn-primary" id="download-pdf" onclick="">Download Architecture (PDF)</button>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -53,21 +53,24 @@
   <!-- Effects After Loading -->
   <script>
 
-    // functions
+    // Interactivity
 
     function loadPage(entry){
       var entry = entry.split(",");
-      $("#ContentIframe").attr('src',entry[0]) // load page
-      $('#ActiveLabel').text(entry[1]) // set active label
+      $("#ContentIframe").attr('src',entry[0])
+      $('#ActiveLabel').text(entry[1])
+      var pdflist = $('#wrapper').data('pdflist')
+      var titles = []; var urls = []; var pdflist_split = pdflist.split("|")
+      for (var i=0;i<pdflist_split.length;i++){
+        if (pdflist_split[i] != ""){
+          var j = pdflist_split[i].split(",");
+          titles.push(j[0]); urls.push(j[1])
+        }
+      }
+      var pdf_url = urls[titles.indexOf(entry[1])];
+      $("#download-pdf").attr('onclick', `window.open('${pdf_url}')`)
     }
 
-    // download architecture report
-    $("#menu-toggle").click(function(e) {
-      e.preventDefault();
-      $("#wrapper").toggleClass("toggled");
-    });
-
-    // set initial active label
     $('#ActiveLabel').text($('#wrapper').data('activelabel'))
 
   </script>
