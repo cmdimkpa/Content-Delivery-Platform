@@ -1,4 +1,4 @@
-from flask import Flask,Response,render_template
+from flask import Flask,Response,render_template,request,redirect
 from flask_cors import CORS
 import requests as http
 import json,time,subprocess,os
@@ -72,6 +72,28 @@ def get_url_pdf(url):
 def load_website():
     NAVBAR,ACTIVE_LABEL,PDF_LIST = build_components()
     return render_template("index.html",NAVBAR=NAVBAR,ACTIVE_LABEL=ACTIVE_LABEL,PDF_LIST=PDF_LIST)
+
+@app.route("/AXA-current-state-architecture/add-page")
+def new_page():
+    args = dict(request.args)
+    required = ["title","url"]; missing = [x for x in required if x not in args]
+    if missing:
+        return responsify(404,"Not Found: these parameters are missing %s" % missing)
+    try:
+        title = args["title"][0]; url = args["url"][0]
+        hit = "http://3.130.5.83:9271/ods/new_record"
+        payload = {
+            	"tablename":"ContentModel",
+            	"data":{
+            		"unit":title,
+            		"url":url
+            	}
+            }
+        HEADERS = {"Content-Type":"application/json"}
+        http.post(hit,json.dumps(payload),headers=HEADERS)
+        return redirect(302,"http://ec2-3-130-5-83.us-east-2.compute.amazonaws.com/AXA-current-state-architecture")
+    except Exception as error:
+        return responsify(400,"Error: %s" % str(error))
 
 @app.route("/favicon.ico")
 def favicon():
