@@ -1,4 +1,4 @@
-from flask import Flask,Response,render_template
+from flask import Flask,Response,render_template,redirect
 from flask_cors import CORS
 import requests as http
 import json
@@ -43,6 +43,10 @@ def build_navbar():
 def load_website():
     NAVBAR,ACTIVE_LABEL = build_navbar()
     return render_template("index.html",NAVBAR=NAVBAR,ACTIVE_LABEL=ACTIVE_LABEL)
+
+@app.route("/favicon.ico")
+def favicon():
+    return app.send_static_file("favicon.ico")
 
 if __name__ == "__main__":
   app.run(host="172.31.29.36",port=2357,threaded=True)
