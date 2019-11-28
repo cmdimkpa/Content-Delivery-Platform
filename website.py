@@ -1,7 +1,7 @@
 from flask import Flask,Response,render_template,request,redirect
 from flask_cors import CORS
 import requests as http
-import json,time,subprocess,os
+import json,time,subprocess,os,base64
 
 app = Flask(__name__)
 CORS(app)
@@ -82,6 +82,12 @@ def get_url_pdf(url):
     run_shell(cmd)
     return "http://ec2-3-130-5-83.us-east-2.compute.amazonaws.com/filehosting/get-file/%s" % essential_name
 
+def get_url_html(b64):
+    essential_name = "%s.html" % seed()
+    fname = here+"static%s%s" % (slash,essential_name)
+    p = open(fname,"wb+"); p.write(base64.b64decode(b64)); p.close()
+    return "http://ec2-3-130-5-83.us-east-2.compute.amazonaws.com/filehosting/get-file/%s" % essential_name
+
 @app.route("/AXA-current-state-architecture")
 def load_website():
     try:
@@ -89,6 +95,14 @@ def load_website():
         return render_template("index.html",NAVBAR=NAVBAR,ACTIVE_LABEL=ACTIVE_LABEL,PDF_LIST=PDF_LIST)
     except:
         return "<h1>404: No pages found, add a page to view</h1>"
+
+@app.route("/AXA-current-state-architecture/add-content",methods=["POST"])
+def add_content():
+    formdata = request.get_json(force=True)
+    required = ["b64"]; missing = [x for x in required if x not in formdata]
+    if missing:
+        return responsify(404,"Not Found: these parameters are missing %s" % missing)
+    return responsify(200,get_url_html(formdata["b64"]))
 
 @app.route("/AXA-current-state-architecture/add-page")
 def new_page():
