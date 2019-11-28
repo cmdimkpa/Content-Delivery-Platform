@@ -46,7 +46,23 @@ def build_components():
         global NAVBAR, PDF_LIST
         title = entry["unit"]; url = entry["url"]
         NAVBAR+='<li class="list-group-item list-group-item-action bg-light" onclick="loadPage(`%s`)">%s</li>' % ("%s,%s"%(url,title),title)
-        PDF_LIST+="%s,%s|"%(title,get_url_pdf(url))
+        if "pdf" in entry:
+            pdf = entry["pdf"]
+        else:
+            pdf = get_url_pdf(url)
+            url = "http://3.130.5.83:9271/ods/update_records"
+            payload = {
+            	"tablename":"ContentModel",
+            	"constraints":{
+                    "ContentModel_id":entry["ContentModel_id"]
+                },
+                "data":{
+                    "pdf":pdf
+                }
+            }
+            HEADERS = {"Content-Type":"application/json"}
+            http.post(url,json.dumps(payload),headers=HEADERS)
+        PDF_LIST+="%s,%s|"%(title,pdf)
         return None
     url = "http://3.130.5.83:9271/ods/fetch_records"
     payload = {
