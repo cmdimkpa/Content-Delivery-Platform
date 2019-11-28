@@ -1,4 +1,4 @@
-from flask import Flask,Response,render_template,request,redirect
+from flask import Flask,Response,render_template,request
 from flask_cors import CORS
 import requests as http
 import json,time,subprocess,os
@@ -44,13 +44,11 @@ def build_components():
     NAVBAR = ""; PDF_LIST = ""
     def add_entry(entry):
         global NAVBAR, PDF_LIST
-        title = entry["unit"]; url = entry["url"]
+        title = entry["unit"]; url = entry["url"]; pdf = entry["pdf"]
         NAVBAR+='<li class="list-group-item list-group-item-action bg-light" onclick="loadPage(`%s`)">%s</li>' % ("%s,%s"%(url,title),title)
-        if "pdf" in entry:
-            pdf = entry["pdf"]
-        else:
+        if not pdf:
             pdf = get_url_pdf(url)
-            url = "http://3.130.5.83:9271/ods/update_records"
+            hit = "http://3.130.5.83:9271/ods/update_records"
             payload = {
             	"tablename":"ContentModel",
             	"constraints":{
@@ -61,16 +59,16 @@ def build_components():
                 }
             }
             HEADERS = {"Content-Type":"application/json"}
-            http.post(url,json.dumps(payload),headers=HEADERS)
+            response = http.post(hit,json.dumps(payload),headers=HEADERS)
         PDF_LIST+="%s,%s|"%(title,pdf)
         return None
-    url = "http://3.130.5.83:9271/ods/fetch_records"
+    hit = "http://3.130.5.83:9271/ods/fetch_records"
     payload = {
     	"tablename":"ContentModel",
     	"constraints":{}
     }
     HEADERS = {"Content-Type":"application/json"}
-    data = http.post(url,json.dumps(payload),headers=HEADERS).json()["data"]
+    data = http.post(hit,json.dumps(payload),headers=HEADERS).json()["data"]
     build = map(add_entry,data)
     return NAVBAR,data[0]["unit"],PDF_LIST
 
@@ -86,8 +84,11 @@ def get_url_pdf(url):
 
 @app.route("/AXA-current-state-architecture")
 def load_website():
-    NAVBAR,ACTIVE_LABEL,PDF_LIST = build_components()
-    return render_template("index.html",NAVBAR=NAVBAR,ACTIVE_LABEL=ACTIVE_LABEL,PDF_LIST=PDF_LIST)
+    try:
+        NAVBAR,ACTIVE_LABEL,PDF_LIST = build_components()
+        return render_template("index.html",NAVBAR=NAVBAR,ACTIVE_LABEL=ACTIVE_LABEL,PDF_LIST=PDF_LIST)
+    except:
+        return "<h1>404: No pages found, add a page to view</h1>"
 
 @app.route("/AXA-current-state-architecture/add-page")
 def new_page():
@@ -102,12 +103,13 @@ def new_page():
             	"tablename":"ContentModel",
             	"data":{
             		"unit":title,
-            		"url":url
+            		"url":url,
+                    "pdf":""
             	}
             }
         HEADERS = {"Content-Type":"application/json"}
-        http.post(hit,json.dumps(payload),headers=HEADERS)
-        return redirect("http://ec2-3-130-5-83.us-east-2.compute.amazonaws.com/AXA-current-state-architecture",302)
+        response = http.post(hit,json.dumps(payload),headers=HEADERS)
+        return load_website()
     except Exception as error:
         return responsify(400,"Error: %s" % str(error))
 
