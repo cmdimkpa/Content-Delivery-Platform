@@ -46,34 +46,8 @@
     </div>
     <!-- /#page-content-wrapper -->
   </div>
-  <!-- /#wrapper -->
-  <!-- Bootstrap core JavaScript -->
   <script src="https://content-delivery-platform.s3.us-east-2.amazonaws.com/jquery.min.js"></script>
   <script src="https://content-delivery-platform.s3.us-east-2.amazonaws.com/bootstrap.bundle.min.js"></script>
-  <!-- Effects After Loading -->
-  <script>
-
-    // Interactivity
-
-    function loadPage(entry){
-      var entry = entry.split(",");
-      $("#ContentIframe").attr('src',entry[0])
-      $('#ActiveLabel').text(entry[1])
-      var pdflist = $('#wrapper').data('pdflist')
-      var titles = []; var urls = []; var pdflist_split = pdflist.split("|")
-      for (var i=0;i<pdflist_split.length;i++){
-        if (pdflist_split[i] != ""){
-          var j = pdflist_split[i].split(",");
-          titles.push(j[0]); urls.push(j[1])
-        }
-      }
-      var pdf_url = urls[titles.indexOf(entry[1])];
-      $("#download-pdf").attr('onclick', `window.open('${pdf_url}')`)
-    }
-
-    $('#ActiveLabel').text($('#wrapper').data('activelabel'));
-    $("#ContentIframe").attr('src',$('#wrapper').data('activepage'));
-
-  </script>
+  <script src="https://content-delivery-platform.s3.us-east-2.amazonaws.com/cdp.js"></script>
 </body>
 </html>
