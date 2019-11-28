@@ -12,7 +12,7 @@
   <link href="https://content-delivery-platform.s3.us-east-2.amazonaws.com/simple-sidebar.css" rel="stylesheet">
 </head>
 <body>
-  <div class="d-flex" id="wrapper" data-activelabel="{{ ACTIVE_LABEL|safe }}" data-pdflist="{{  PDF_LIST|safe  }}">
+  <div class="d-flex" id="wrapper" data-activelabel="{{ ACTIVE_LABEL|safe }}" data-activepage="{{ ACTIVE_PAGE|safe }}" data-pdflist="{{  PDF_LIST|safe  }}">
     <!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading"><img src="https://content-delivery-platform.s3.us-east-2.amazonaws.com/logo.png" alt="AXA Current State Architecture" width="325" height="156"> </div>
@@ -71,7 +71,8 @@
       $("#download-pdf").attr('onclick', `window.open('${pdf_url}')`)
     }
 
-    $('#ActiveLabel').text($('#wrapper').data('activelabel'))
+    $('#ActiveLabel').text($('#wrapper').data('activelabel'));
+    $("#ContentIframe").attr('src',$('#wrapper').data('activepage'));
 
   </script>
 </body>
