@@ -2,6 +2,8 @@ from flask import Flask,Response,render_template,request,redirect
 from flask_cors import CORS
 import requests as http
 import json,time,subprocess,os,base64
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
 
 app = Flask(__name__)
 CORS(app)
@@ -13,14 +15,6 @@ else:
     slash = "/"
 here+=slash
 
-def responsify(status,message,data={}):
-    code = int(status)
-    a_dict = {"data":data,"message":message,"code":code}
-    try:
-        return Response(json.dumps(a_dict), status=code, mimetype='application/json')
-    except:
-        return Response(str(a_dict), status=code, mimetype='application/json')
-
 def run_shell(cmd):
   p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
   out, err = p.communicate()
@@ -31,6 +25,25 @@ def run_shell(cmd):
           return eval(out)
       except:
           return out
+
+comps = map(lambda x:x.split(":")[-1],run_shell("cat /home/ubuntu/S3AppDatabase.config").split("\r\n"))[:-1]
+conn = S3Connection(comps[0], comps[-1], host="s3.%s.amazonaws.com" % comps[1])
+try:
+    bucket = conn.create_bucket(comps[2])
+except:
+    bucket = conn.get_bucket(comps[2])
+
+def newS3FileURL(keyname,stringdata):
+    key = Key(bucket); key.key = keyname; key.set_contents_from_string(stringdata)
+    return "https://content-delivery-platform.s3.us-east-2.amazonaws.com/%s" % keyname
+
+def responsify(status,message,data={}):
+    code = int(status)
+    a_dict = {"data":data,"message":message,"code":code}
+    try:
+        return Response(json.dumps(a_dict), status=code, mimetype='application/json')
+    except:
+        return Response(str(a_dict), status=code, mimetype='application/json')
 
 @app.route("/filehosting/get-file/<path:filename>")
 def get_file(filename):
@@ -82,12 +95,6 @@ def get_url_pdf(url):
     run_shell(cmd)
     return "http://ec2-3-130-5-83.us-east-2.compute.amazonaws.com/filehosting/get-file/%s" % essential_name
 
-def get_url_html(b64):
-    essential_name = "%s.html" % seed()
-    fname = here+"static%s%s" % (slash,essential_name)
-    p = open(fname,"wb+"); p.write(base64.b64decode(b64)); p.close()
-    return "http://ec2-3-130-5-83.us-east-2.compute.amazonaws.com/filehosting/get-file/%s" % essential_name
-
 @app.route("/AXA-current-state-architecture")
 def load_website():
     try:
@@ -102,7 +109,7 @@ def add_content():
     required = ["b64"]; missing = [x for x in required if x not in formdata]
     if missing:
         return responsify(404,"Not Found: these parameters are missing %s" % missing)
-    return responsify(200,get_url_html(formdata["b64"]))
+    return responsify(200,newS3FileURL("%s.html"%seed(),base64.b64decode(formdata["b64"])))
 
 @app.route("/AXA-current-state-architecture/add-page")
 def new_page():
