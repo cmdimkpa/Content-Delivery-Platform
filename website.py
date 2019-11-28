@@ -34,7 +34,7 @@ except:
     bucket = conn.get_bucket(comps[2])
 
 def newS3FileURL(keyname,stringdata):
-    key = Key(bucket); key.key = keyname; key.set_contents_from_string(stringdata)
+    key = Key(bucket); key.key = keyname; key.content_type = 'text/html'; key.set_contents_from_string(stringdata)
     return "https://content-delivery-platform.s3.us-east-2.amazonaws.com/%s" % keyname
 
 def responsify(status,message,data={}):
