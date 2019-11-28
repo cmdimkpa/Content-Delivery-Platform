@@ -83,7 +83,7 @@ def build_components():
     HEADERS = {"Content-Type":"application/json"}
     data = http.post(hit,json.dumps(payload),headers=HEADERS).json()["data"]
     build = map(add_entry,data)
-    return NAVBAR,data[0]["unit"],PDF_LIST
+    return NAVBAR,data[0]["unit"],data[0]["url"],PDF_LIST
 
 def seed():
     return int(time.time())
@@ -98,8 +98,8 @@ def get_url_pdf(url):
 @app.route("/AXA-current-state-architecture")
 def load_website():
     try:
-        NAVBAR,ACTIVE_LABEL,PDF_LIST = build_components()
-        return render_template("index.html",NAVBAR=NAVBAR,ACTIVE_LABEL=ACTIVE_LABEL,PDF_LIST=PDF_LIST)
+        NAVBAR,ACTIVE_LABEL,ACTIVE_PAGE,PDF_LIST = build_components()
+        return render_template("index.html",NAVBAR=NAVBAR,ACTIVE_LABEL=ACTIVE_LABEL,ACTIVE_PAGE=ACTIVE_PAGE,PDF_LIST=PDF_LIST)
     except:
         return "<h1>404: No pages found, add a page to view</h1>"
 
