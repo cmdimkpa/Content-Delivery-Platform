@@ -1,10 +1,19 @@
 // CDP client library
 
-const db_base_url = 'https://s3appdb.herokuapp.com/ods/';
-const fetch_records_url = db_base_url + 'fetch_records';
-const new_record_url = db_base_url + 'new_record';
-const delete_url = db_base_url + 'delete_records';
-const update_url = db_base_url + 'update_records';
+const projectIdentifier = "Untitled"  // change to the name of your project
+
+const pooledDBGateway = (method) => {
+    var CDPEventCounter;
+    if (!localStorage.getItem("CDPEventCounter")){
+        CDPEventCounter = 1
+    } else {
+        CDPEventCounter = localStorage.getItem("CDPEventCounter") + 1
+    }
+    localStorage.setItem("CDPEventCounter", CDPEventCounter)
+    const gateways = ["ods2", "ods3", "ods4"]
+    let gateway = gateways[CDPEventCounter%gateways.length]
+    return `https://${gateway}.herokuapp.com/ods/${method}`
+}
 
 // generate navbar
 const generate_navbar = (assets) => {
@@ -55,10 +64,10 @@ const load_asset_on_click = (asset_id) => {
 // initialize homepage
 const load_homepage = () => {
     // get data elements
-    axios.post(fetch_records_url, {
+    axios.post(pooledDBGateway('fetch_records'), {
         tablename: 'ContentModel',
         constraints: {
-            identifier: 'axa'
+            identifier: projectIdentifier
         }
     }).then((response) => {
         if (response) {
@@ -66,7 +75,7 @@ const load_homepage = () => {
             var assets = response.data.data;
             if (JSON.stringify(assets) == '[]') {
                 assets = [{
-                    "identifier": "axa",
+                    "identifier": projectIdentifier,
                     "ord": 0,
                     "label": "Welcome",
                     "url": "docs/welcome.html",
@@ -96,7 +105,7 @@ const load_homepage = () => {
 
 // adjust asset position
 const adjust_asset_position = (asset_id, nudge) => {
-    axios.post(fetch_records_url, {
+    axios.post(pooledDBGateway('fetch_records'), {
         tablename: 'ContentModel',
         constraints: {
             'ContentModel_id': asset_id
@@ -104,7 +113,7 @@ const adjust_asset_position = (asset_id, nudge) => {
     }).then((response) => {
         var data = response.data.data[0];
         var ord = data.ord + nudge;
-        axios.post(update_url, {
+        axios.post(pooledDBGateway('update_records'), {
             tablename: 'ContentModel',
             constraints: {
                 'ContentModel_id': asset_id
@@ -122,10 +131,10 @@ const adjust_asset_position = (asset_id, nudge) => {
 // add new asset
 const add_new_asset = (asset_label, asset_url, ord = 0) => {
     // store content model
-    axios.post(new_record_url, {
+    axios.post(pooledDBGateway('new_record'), {
         tablename: 'ContentModel',
         data: {
-            identifier: 'axa',
+            identifier: projectIdentifier,
             'ord': ord,
             label: asset_label,
             url: asset_url
@@ -159,7 +168,7 @@ const submitForm = () => {
 
 // remove asset
 const remove_asset = (asset_id) => {
-    axios.post(delete_url, {
+    axios.post(pooledDBGateway('delete_records'), {
         tablename: 'ContentModel',
         constraints: {
             'ContentModel_id': asset_id
