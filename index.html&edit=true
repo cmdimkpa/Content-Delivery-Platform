@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>AXA Current State Architecture</title>
+  <!-- Bootstrap core CSS -->
+  <link rel="shortcut icon" href="./favicon.ico" />
+  <link href="./vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="./css/simple-sidebar.css" rel="stylesheet">
+  <style>
+.button {
+  background-color: lightblue;
+  border: none;
+  color: grey;
+  padding: 0px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+.button-inner {
+  background-color: grey;
+  color: white;
+}
+.actions {
+  padding: 2px;
+  background-color: cornflowerblue;
+  color: white;
+  border-radius: 50%;
+}
+</style>
+  <script src="./vendor/jquery/jquery.min.js"></script>
+  <script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="./assets/lodash.core.js"></script>
+  <script src="./assets/axios.js"></script>
+  <script src="./cdp.js"></script>
+</head>
+<body>
+  <div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+      <div class="sidebar-heading"><img src="./assets/logo.png" alt="AXA Current State Architecture" width="325" height="156"> </div>
+      <div id="navbar" class="list-group list-group-flush">
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom  float-right">
+        <button type="submit" class="btn btn-primary" id="download-pdf" onclick=printableView()>Printable View</button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+          </ul>
+        </div>
+      </nav>
+      <div class="container-fluid">
+        <h1 class="mt-4" id="ActiveLabel"></h1>
+        <div id="Container"
+           style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
+           <iframe id="ContentIframe" width="100%" height="100%"
+            src=""
+            frameborder="0" allowfullscreen=""
+            style="position:absolute; top:0; left: 0"></iframe>
+          </div>
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+  </div>
+  <!-- modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true" data-curref="" data-maxref="">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100 font-weight-bold">Add Content</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body mx-3">
+          <div class="md-form mb-5">
+            <label id="label-f" data-error="wrong" data-success="right" for="label-i" autofocus>Page Label</label>
+            <input type="text" id="label-i" class="form-control validate">
+          </div>
+  
+          <div class="md-form mb-4">
+            <label data-error="wrong" data-success="right" for="url-i">Page URL</label>
+            <input type="text" id="url-i" class="form-control validate" value="docs/">
+          </div>
+  
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button class="btn btn-default" onclick=submitForm()>Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  load_homepage()
+  </script>
+</body>
+</html>
+
