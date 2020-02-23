@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>AXA Current State Architecture</title>
+  <title>Documentation Project</title>
   <!-- Bootstrap core CSS -->
   <link rel="shortcut icon" href="./favicon.ico" />
   <link href="./vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -46,7 +46,7 @@
   <div class="d-flex" id="wrapper">
     <!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper">
-      <div class="sidebar-heading"><img src="./assets/logo.png" alt="AXA Current State Architecture" width="325" height="156"> </div>
+      <div class="sidebar-heading"><img src="" alt="" width="325" height="156"> </div>
       <div id="navbar" class="list-group list-group-flush">
       </div>
     </div>
