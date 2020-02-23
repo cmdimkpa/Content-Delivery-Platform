@@ -7,7 +7,7 @@ const pooledDBGateway = (method) => {
     if (!localStorage.getItem("CDPEventCounter")){
         CDPEventCounter = 1
     } else {
-        CDPEventCounter = localStorage.getItem("CDPEventCounter") + 1
+        CDPEventCounter = parseInt(localStorage.getItem("CDPEventCounter")) + 1
     }
     localStorage.setItem("CDPEventCounter", CDPEventCounter)
     const gateways = ["ods2", "ods3", "ods4"]
